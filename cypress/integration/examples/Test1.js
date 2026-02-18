@@ -10,18 +10,19 @@ describe('My first test suite', function(){
         cy.wait(2000)
         
         // selenium get hit url in browser, cypress get acts like findElement of selenium
+        cy.get('.product').should('have.length',5)
         cy.get('.product:visible').should('have.length',4)
         
         // Parent child chaining
         cy.get('.products').as('productLocator') // alias, we can use this alias in place of .products
-        cy.get('.products').find('.product').should('have.length',4)       
-        cy.get('.products > :nth-child(3)').contains('ADD TO CART').click().then(function(){
-            console.log('sf') // sf will be printed after the click action is performed, not before
-        })
+        cy.get('@productLocator').find('.product').should('have.length',4)       
+        cy.get(':nth-child(3) > .product-action > button').click()
         
-        cy.get('.products').find('.product').eq(2).contains('ADD TO CART').click()
+        cy.get('@productLocator').find('.product').eq(2).contains('ADD TO CART').click().then(function(){
+            console.log('sf')
+        })
 
-        cy.get('.products').find('.product').each(($el, index, $list) => {
+        cy.get('@productLocator').find('.product').each(($el, index, $list) => {
             const textVeg = $el.find('h4.product-name').text()
             if (textVeg.includes('Cashews')){    
                 cy.wrap($el).find('button').click()
@@ -40,6 +41,14 @@ describe('My first test suite', function(){
         cy.get('.brand').then(function(logoelement){
             cy.log(logoelement.text())
         })
+        // const logo=cy.get('.brand') - this will not work because cypress commands are asynchronous, we have to use .then() method to work with the text
+        // cy.log(logo.text()) - this will not work because cypress commands are asynchronous, we have to use .then() method to work with the text
+        // cy.log(logo.text()) - this will not work because cypress commands are asynchronous, we have to use .then() method to work with the text
 
+
+
+
+
+        // fixture
     })
 })
